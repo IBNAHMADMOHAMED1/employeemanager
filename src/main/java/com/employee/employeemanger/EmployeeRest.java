@@ -2,11 +2,9 @@ package com.employee.employeemanger;
 
 import com.employee.employeemanger.model.Employee;
 import com.employee.employeemanger.service.EmployeeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,13 +20,32 @@ public class EmployeeRest {
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees(){
         List<Employee> employees = empS.findAllEmployees();
-        return ResponseEntity.ok(employees);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id){
         Employee employee = empS.findEmployeeById(id);
-        return ResponseEntity.ok(employee);
+        return new ResponseEntity<>(employee, HttpStatus.OK);
+    }
+
+
+
+    @PostMapping("/add")
+    public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee){
+        Employee newEmployee = empS.createEmployee(employee);
+        return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee){
+        Employee updateEmployee = empS.updateEmployee(employee);
+        return new ResponseEntity<>(updateEmployee, HttpStatus.OK);
+    }
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long id){
+        empS.deleteEmployee(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
